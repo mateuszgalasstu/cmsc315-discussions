@@ -14,7 +14,6 @@ def insert_at(lst, index, value):
     """
     TODO (Student):
     Insert a value into the list at the specified index.
-
     Requirements:
     - Use a list operation to insert the value.
     - Add comments explaining what happens to existing elements
@@ -22,7 +21,11 @@ def insert_at(lst, index, value):
     - Use comments to explain how insertion performance may vary depending on
       where the insertion occurs.
     """
-    pass
+    ## Inserting at the beginning shifts every element
+    ## O(n) in the slowest case
+    ## Inserting in the middle would shift around half, so still O(n)
+    ## Inserting at the end shifts nothing so O(1) in the best case
+    lst.insert(index, value)
 
 
 def delete_at(lst, index):
@@ -36,7 +39,11 @@ def delete_at(lst, index):
     - Return None if the index is invalid.
     - Add comments explaining why index validation and safe deletion are important.
     """
-    pass
+    if index < 0 or index >= len(lst):
+        return None
+
+    removed = lst.pop(index)
+    return removed
 
 
 def search_value(lst, value):
@@ -49,7 +56,12 @@ def search_value(lst, value):
     - Return -1 if the value is not found.
     - Add comments explaining why this is a linear search and why it scans sequentially.
     """
-    pass
+    for i, item in enumerate(lst):
+
+        if item == value:
+            return i
+
+    return -1
 
 
 def main():
@@ -70,8 +82,25 @@ def main():
     # 5. Use comments to explain each step in the implementation.
 
     print("\n=== INSERTION TESTS ===")
-    print("TODO: Create a list and demonstrate insertions.")
 
+    ## Starting with a small list of values
+    nums = [10, 20, 30, 40, 50]
+    print("Original list:", nums)
+
+    ##Insert at index 0, every already existing element shifts one to the right
+    insert_at(nums, 0, 5)
+    print("After inserting 5 at the beginning:", nums)
+
+    ## Insert in the middle. Only the elements after the middle
+    ## index shift right, so still O(n)
+    middle = len(nums) // 2
+    insert_at(nums, middle, 25)
+    print(f"After inserting 25 at index {middle} (middle):", nums)
+
+    ## Insert at the end (index == len). Nothing needs to shift
+    ## At the best case: O(1)
+    insert_at(nums, len(nums), 60)
+    print("After inserting 60 at the end:", nums)
     # ===============================
     # TODO (Student): DELETION TESTS
     # ===============================
@@ -86,7 +115,7 @@ def main():
     # 4. Use comments to clearly explain what is happening in the output.
 
     print("\n=== DELETION TESTS ===")
-    print("TODO: Demonstrate deletions from multiple positions.")
+
 
     # ===============================
     # TODO (Student): SEARCH TESTS
@@ -98,8 +127,22 @@ def main():
     # 3. Display the search results with clear explanations.
     # 4. Use comments to explain each step.
 
+    ## Delete from the beginning, all remaining elements shift left
+    ## to fill the gap: O(n)
+    removed = delete_at(nums, 0)
+    print("Removed from beginning:", removed, "-->", nums)
+
+    ## Delete from middle. Elements after index shift left
+    middle = len(nums) // 2
+    removed = delete_at(nums, middle)
+    print(f"Removed from index {middle} (middle):", removed, "-->", nums)
+
+    ## Delete from end, no shifting needed
+    removed = delete_at(nums, len(nums) - 1)
+    print("Removed from end:", removed, "-->", nums)
+
     print("\n=== SEARCH TESTS ===")
-    print("TODO: Demonstrate searching for values.")
+
 
     # ===============================
     # TODO (Student): EDGE CASES
@@ -114,9 +157,33 @@ def main():
     # - Delete from an empty list
     # - Use comments to explain each edge case.
 
-    print("\n=== EDGE CASES ===")
-    print("TODO: Demonstrate at least two edge cases.")
+    ## Search for a value that exists, the linear search
+    ## checks each element in order until it finds a match
+    target = 25
+    result = search_value(nums, target)
+    print(f"Searching for {target}: found at index {result}")
 
+    ## Search for a value that doesn't exist, the search must check
+    ## every element before concluding that it's missing.
+    ## worst case: O(n)
+    target = 99
+    result = search_value(nums, target)
+    print(f"Searching for {target}: result {result} (not found)")
+
+
+    print("\n=== EDGE CASES ===")
+
+
+    ## Edge case #1: delete with an invalid index. Validation catches
+    ## it and returns None instead of crashing with an IndexError
+    result = delete_at(nums, 10)
+    print("Delete at invalid index 10:", result, "-->", nums, "(unchanged)")
+
+    ## Edge case 2: delete from an empty list. No index is valid when
+    ## the length is 0, so the function safely returns None.
+    empty = []
+    result = delete_at(empty, 0)
+    print("Delete from empty list:", result)
 
 
 if __name__ == "__main__":
